@@ -19,6 +19,7 @@ enum class Category{
 
 class Task {
         private:
+		static int nextId;
                 int id;
                 std::string name;
                 std::time_t startTime;
@@ -27,6 +28,7 @@ class Task {
                 std::time_t remindTime;
 
         public:
+		Task() = default;
                 Task(const std::string& name,std::time_t startTime,
                                 Priority priority = Priority::MEDIUM,
                                 Category category = Category::LIFE);
@@ -36,6 +38,8 @@ class Task {
                 Priority getPriority() const;
                 Category getCategory() const;
                 std::time_t getRemindTime() const;
+		std::string toFileString() const;
+		static Task fromFileString(const std::string& line);
 };
 
 #endif
