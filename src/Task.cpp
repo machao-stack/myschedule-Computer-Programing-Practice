@@ -1,6 +1,9 @@
 #include "Task.hpp"
 
-Task::Task(const std::string& name,std::time_t startTime,Priority priority,Category category):id(1),name(name),startTime(startTime),priority(priority),category(category),remindTime(startTime){
+int Task::nectId = 1;
+
+Task::Task(const std::string& name,std::time_t startTime,Priority priority,Category category):
+	id(nextId++),name(name),startTime(startTime),priority(priority),category(category),remindTime(startTime){
 }
 
 int Task::getId() const{
