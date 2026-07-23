@@ -35,7 +35,24 @@ std::vector<Task> loadTasks(const std::string& filename){
 
 int main(int argc,char* argv[])
 {
+	std::string username = "admin";
+	std::string passwordHash = std::to_string(std::hash<std::string>{}("123456"));
+
+	std::string inputUser, inputPass;
+	std::cout << "Username:";
+	std::cin>>inputUser;
+	std::cout<< "Password:";
+	std::cin >> inputPass;
+
+	if (inputUser != username || std::to_string(std::hash<std::string>{}(inputPass))!= passwordHash){
+		std::cout << "Login failed." << std::endl;
+		return 0;
+	}
+
+	std::cout << "Login successful."<<std::endl;
+
 	std::vector<Task> tasks;
+
 	tasks = loadTasks("tasks.txt");
 	std::cout << "Loaded " << tasks.size() << "tasks from file." << std::endl;
 
@@ -76,7 +93,84 @@ int main(int argc,char* argv[])
 	}
 
 	else if (cmd == "deltask"){
-		std::cout << "deltask command - not implemented yet"<<std::endl;
+	if (argc < 3){
+		std::cout << "Usage: myschedule deltask <id>" <<std::endl;
+		return 0;
+	}
+
+	int id = std::stoi(argv[2]);
+	bool found = false;
+
+	for(size_t i = 0; i<tasks.size(); i++){
+		if (tasks[i].getId() == id){
+			tasks.erase(tasks.begin() + i);
+			found = true;
+			std::cout << "Task "<<id<<" deleted."<<std::endl;
+			break;
+		}
+	}
+
+	if (!found) {
+		std::cout << "Task" << id << "not found." << std::endl;
+	}else{
+		saveTasks(tasks,"tasks.txt");
+	}
+	}
+
+	else if (cmd == "run"){
+		std::cout << "Enter interactive mode.Type 'exit' to quit." << std::endl;
+		std::string input;
+		while (true){
+			std::cout << ">";
+			std::getline(std::cin,input);
+			if (input == "exit" || input == "quit") {
+				break;
+			}
+if (input == "showtask") {
+	//showtask;
+	if (tasks.empty()) {
+		std:: cout << "No tasks found." << std::endl;
+	}else{
+		std::cout << "All tasks:" << std::endl;
+		for(size_t i = 0;i < tasks.size(); i++){
+			std::cout << "ID: " <<tasks[i].getId()
+				<< ",Name: " <<tasks[i].getName() << std::endl;
+		}
+	}
+}
+
+else if (input.rfind("addtask",0) == 0) {
+	//addtask
+	std::string name = input.substr(8);
+	Task task(name, std::time(nullptr));
+	tasks.push_back(task);
+	saveTasks(tasks,"tasks.txt");
+	std::cout<< "Task added! ID: "<< task.getId() << std::endl;
+}
+
+else if (input.rfind("deltask",0) == 0) {
+	//deltask
+	int id = std::stoi(input.substr(8));
+	bool found = false;
+	for (size_t i = 0;i < tasks.size();i++){
+		if (tasks[i].getId() == id){
+			tasks.erase(tasks.begin() + i);
+			found = true;
+			std::cout<< "Task " << id << "deleted." << std::endl;
+			break;
+		}
+		}
+	if(!found) {
+		std::cout << "Task " << id << " not found." << std::endl;
+	}else{
+		saveTasks(tasks,"tasks.txt");
+	}
+}
+
+else {
+	std::cout << "Unknown command. Use: addtask,showtask,deltask,exit" << std::endl;
+}
+		}
 	}
 
 	else{
