@@ -3,8 +3,7 @@
 int Task::nextId = 1;
 
 Task::Task(const std::string& name,std::time_t startTime,Priority priority,Category category):
-	id(nextId++),name(name),startTime(startTime),priority(priority),category(category),remindTime(startTime){
-}
+	id(nextId++),name(name),startTime(startTime),priority(priority),category(category),remindTime(startTime),reminded(false){}
 
 int Task::getId() const{
 	return id;
@@ -72,3 +71,10 @@ Task Task::fromFileString(const std::string& line){
 			return task;
 			}
 
+bool Task::isReminded() const {
+	return reminded;
+}
+
+void Task::setReminded(bool r){
+	reminded = r;
+}

@@ -26,6 +26,7 @@ class Task {
                 Priority priority;
                 Category category;
                 std::time_t remindTime;
+		bool reminded;
 
         public:
 		Task() = default;
@@ -38,6 +39,8 @@ class Task {
                 Priority getPriority() const;
                 Category getCategory() const;
                 std::time_t getRemindTime() const;
+		bool isReminded() const;
+		void setReminded(bool r);
 		std::string toFileString() const;
 		static Task fromFileString(const std::string& line);
 };

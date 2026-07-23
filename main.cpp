@@ -4,6 +4,8 @@
 #include"Task.hpp"
 #include<vector>
 #include<fstream>
+#include<thread>
+#include<chrono>
 
 void saveTasks(const std::vector<Task>& tasks, const std::string& filename){
 	std::ofstream file(filename);
@@ -33,6 +35,22 @@ std::vector<Task> loadTasks(const std::string& filename){
 	return tasks;
 }
 
+void reminderLoop(std::vector<Task>& tasks){
+	while(true) {
+		std::this_thread::sleep_for(std::chrono::seconds(10));
+
+		std::time_t now = std::time(nullptr);
+
+		for(auto& task : tasks){
+			if(!task.isReminded() && task.getStartTime() <= now) {
+				std::cout << "\n[REMINDER] Task \"" << task.getName()
+					<<"\" (ID: " << task.getId() << ") is due!" << std::endl;
+				task.setReminded(true);
+			}
+		}
+	}
+}
+
 int main(int argc,char* argv[])
 {
 	std::string username = "admin";
@@ -55,6 +73,9 @@ int main(int argc,char* argv[])
 
 	tasks = loadTasks("tasks.txt");
 	std::cout << "Loaded " << tasks.size() << "tasks from file." << std::endl;
+	std::thread reminderThread(reminderLoop, std::ref(tasks));
+        reminderThread.detach();
+
 
 	if(argc < 2)
 	{
